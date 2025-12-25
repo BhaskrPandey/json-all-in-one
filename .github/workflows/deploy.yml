@@ -1,0 +1,45 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main  # Runs whenever you push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Download your code
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # 2. Install Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    # 3. Install Dependencies
+    - name: Install Dependencies
+      run: npm install
+
+    # 4. Build the Project
+    - name: Build Project
+      run: npm run build
+
+    # 5. Log in to AWS
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1  # Change this if your bucket is in a different region
+
+    # 6. Upload to S3 (Sync deletes old files automatically)
+    - name: Deploy to S3
+      run: aws s3 sync dist/ s3://${{ secrets.AWS_S3_BUCKET }} --delete
+
+    # 7. Clear CloudFront Cache
+    - name: Invalidate CloudFront
+      run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID }} --paths "/*"

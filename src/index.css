@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Optional: Make the scrollbars look dark and modern (DevTool style) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a; /* matches gray-950 */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155; /* matches slate-700 */
+  border-radius: 5px;
+  border: 2px solid #0f172a;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
