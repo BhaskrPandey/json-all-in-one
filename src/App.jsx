@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { FileJson, GitCompare, FileCode, Settings, ShieldCheck, Sun, Moon } from 'lucide-react'; // Added Sun/Moon
-import { useTheme } from './context/ThemeContext'; // Import Hook
+import { FileJson, GitCompare, FileCode, Settings, ShieldCheck, Sun, Moon } from 'lucide-react';
+import { useTheme } from './context/ThemeContext';
 
 // Import Components
 import JsonEditor from './features/editor/JsonEditor';
@@ -10,6 +10,55 @@ import JsonConverter from './features/converter/JsonConverter';
 import JwtDecoder from './features/jwt/JwtDecoder';
 import BuyCoffee from './components/ui/BuyCoffee';
 
+// --- SEO Content Component (New) ---
+// --- SEO Content Component (Fixed Layout) ---
+const HomeWithSEO = () => {
+  return (
+    <div className="flex flex-col h-full"> {/* FIX: h-full ensures it fills screen */}
+      
+      {/* 1. The Editor Wrapper (Takes all empty space) */}
+      <div className="flex-1 relative min-h-[500px]"> 
+        <JsonEditor />
+      </div>
+
+      {/* 2. SEO Text Section (Sits at the bottom) */}
+      <div className="flex-shrink-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+        <div className="max-w-4xl mx-auto px-6 py-12 text-gray-600 dark:text-gray-400">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            The Secure, Client-Side JSON Workspace
+          </h2>
+          <p className="mb-6 leading-relaxed">
+            <strong>JSON AIO</strong> is a privacy-first <strong>online JSON editor</strong> designed for developers who handle sensitive data. 
+            Unlike other formatters that upload your code to a server, JSON AIO processes everything 
+            <strong>100% locally in your browser</strong>. Your API keys, customer data, and logs never leave your device.
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Why use JSON AIO?</h3>
+              <ul className="list-disc list-inside space-y-2 text-sm">
+                <li><strong>JSON Linter:</strong> Validate syntax and fix errors instantly.</li>
+                <li><strong>Offline Capable:</strong> Works without internet (PWA).</li>
+                <li><strong>Diff Checker:</strong> Compare two JSON files side-by-side.</li>
+                <li><strong>Privacy First:</strong> No backend database. No tracking.</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">How to Format JSON?</h3>
+              <p className="text-sm leading-relaxed">
+                Simply paste your raw or minified JSON string into the editor above. 
+                Our engine automatically detects syntax errors. Click <strong>"Format"</strong> to 
+                beautify your code with proper indentation, or <strong>"Minify"</strong> to compress it for production.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- Navigation Item Component ---
 const NavItem = ({ to, icon: Icon, label }) => {
   const location = useLocation();
   const isActive = location.pathname === to;
@@ -30,7 +79,7 @@ const NavItem = ({ to, icon: Icon, label }) => {
 };
 
 export default function App() {
-  const { isDarkMode, toggleTheme } = useTheme(); // Use the hook
+  const { isDarkMode, toggleTheme } = useTheme();
 
   return (
     <Router>
@@ -80,8 +129,8 @@ export default function App() {
 
               <BuyCoffee />
 
-              <div className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
-                <div className="w-2 h-2 rounded-full bg-green-500"></div>
+              <div className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1 font-medium bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-full border border-green-200 dark:border-green-800">
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
                 Client-Side Only
               </div>
             </div>
@@ -90,7 +139,8 @@ export default function App() {
           {/* Content Area */}
           <div className="flex-1 overflow-auto bg-gray-50 dark:bg-[#1e1e1e]">
             <Routes>
-              <Route path="/" element={<JsonEditor />} />
+              {/* Updated Route to use the SEO wrapper */}
+              <Route path="/" element={<HomeWithSEO />} />
               <Route path="/diff" element={<JsonDiff />} />
               <Route path="/converter" element={<JsonConverter />} />
               <Route path="/jwt" element={<JwtDecoder />} />
